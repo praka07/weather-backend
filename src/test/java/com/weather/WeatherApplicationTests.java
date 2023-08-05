@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
@@ -47,5 +48,19 @@ class WeatherApplicationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
+    @Test
+    void testGetWeatherWithoutCityName() {
+        ResponseEntity<?> response = weatherApiService.getWeatherByCityName("");
+        String expectedResult="{\"cod\":\"400\",\"message\":\"Nothing to geocode\"}";
+        assertEquals(expectedResult, response.getBody().toString());
 
+    }
+
+    @Test
+    void testGetWeatherByNotAvailableCity() {
+        ResponseEntity<?> response = weatherApiService.getWeatherByCityName("sy");
+        String expectedResult="{\"cod\":\"404\",\"message\":\"city not found\"}";
+        assertEquals(expectedResult, response.getBody().toString());
+
+    }
 }
